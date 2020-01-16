@@ -1,0 +1,254 @@
+/* Stylesheet for Login Authentication
+Theme Name: Authenticate
+Author: Kayla D. Coleman
+Author URI: www.github.com/kdcoleman
+*/
+
+/* Downloaded Fonts*/
+@import url(https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap);
+
+/***************************** GENERIC ELEMENTS *******************************/
+
+html, body {
+  background-color: #FCCDC4;
+  position: relative;
+  height: 100%;
+  margin: 0;
+}
+
+/*Headings*/
+h1, h2 {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 600;
+  font-size: 36px;
+  color: #FFF;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+  h1{
+    color: #8BCAF7;
+    text-shadow: 1px 1px 5px #FCCDC4;
+    text-align: left;
+    display: inline-block;
+  }
+  h2 {
+    color: inherit;
+    font-size: 32px;
+    font-weight: 500;
+    display: inline-block;
+    text-align: left;
+  }
+  h3 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: #AFAFAF;
+    text-shadow: 1px 1px 3px #8BCAF7;
+  }
+  h3.home {
+    position: absolute;
+    top: 5%;
+    left: 65%;
+  }
+  h4 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 20px;
+    line-height: 150%;
+    color: #FFF;
+    text-align: left;
+  }
+  p  {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 20px;
+    color: #AFAFAF;
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+    display: inline-block;
+  }
+
+img {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0.9;
+  transition-delay: 200ms;
+  transition-duration: 200ms;
+}
+
+button {
+  background-color: #8BCAF7;
+  border: 1px solid #8BCAF7;
+  border-radius: 20px;
+  box-shadow: 0px 1px 2px #CCC;
+  color: #FFF;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  margin: 10px;
+  padding: 10px;
+  width: 70%;
+}
+
+a.head {
+  color: #8BCAF7;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  text-decoration: none;
+  margin: 10px;
+}
+
+a.head:hover {
+  color: #FCCDC4;
+}
+
+form {
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+}
+
+input {
+  width: 80%;
+  padding-bottom: 5px;
+  font-size: 16px;
+  color: #808080;
+  text-align: left;
+  outline: 0;
+  border-width: 0 0 2px;
+  border-color: #808080;
+}
+
+input:hover {
+  border-color: #8BCAF7;
+}
+
+input:focus {
+  border-color: #8BCAF7;
+}
+
+form span {
+  margin: 0;
+  padding: 0;
+  color: red;
+  font-size: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 200;
+  display: block;
+  width: 100%;
+}
+
+/********************************* HEADER *************************************/
+header {
+  padding: 0 15px;
+  color: #FFF;
+  background-color: transparent;
+  clear: left;
+  text-align: left;
+  margin: 0px;
+}
+
+/******************************* MAIN CONTENT *********************************/
+.container {
+  background-color: #FFF;
+  color: #000;
+  margin: 0px;
+  padding-bottom: 50px;
+  position: relative;
+  min-height: 100%;
+  overflow: hidden;
+  display: block;
+  box-sizing: border-box;
+}
+
+.section {
+  background-color: #FFF;
+  color: #000;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: auto;
+  display: block;
+  text-align: center;
+  margin: 0px auto;
+  padding: 0;
+}
+
+.rightside {
+  float: right;
+  margin-top: 30px;
+}
+
+.alert {
+  background-color: #FFF;
+  color: #8BCAF7;
+  border: 1px solid #FFF;
+  border-radius: 5px;
+  box-shadow: 8px 8px 13px 2px #FCCDC4;
+  margin: 0px auto;
+  padding: 20px;
+  width: 30%;
+  max-width: 50%;
+  box-sizing: border-box;
+  position: absolute;
+  top: 25%;
+  left: 35%;
+  z-index: 3;
+  overflow: hidden;
+  display: block;
+  text-align: center;
+  opacity: 0;
+  transition: linear 200ms;
+}
+
+.alert.active {
+  opacity: 1;
+  z-index: 2000;
+}
+
+/*  Style close button */
+.close {
+  cursor: pointer;
+  width: 20px;
+  z-index: 3;
+  float: right;
+}
+  .close div {
+    background-color: #808080;
+    border-radius: 25px;
+    height: 2px;
+  }
+  .close .bar-one {
+    transform: translate(0, 1px) rotate(45deg);
+  }
+  .close .bar-two {
+    transform: translate(0,-1px) rotate(-45deg);
+  }
+
+/********************************** FOOTER ************************************/
+footer {
+  padding: 20px;
+  margin-top: 10px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background-image: linear-gradient(to right, #FCCDC4, #8BCAF7);
+  color: #FFF;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
