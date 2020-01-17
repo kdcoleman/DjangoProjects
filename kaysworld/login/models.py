@@ -10,6 +10,7 @@ class User(models.Model):
     email = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     join_date = models.DateTimeField('date joined')
+    email_confirmed = models.BooleanField(default=False)
 
     def joined_recently(self):
         return timezone.now() - datetime.timedelta(days=7) <= self.join_date <= timezone.now()

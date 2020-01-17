@@ -4,7 +4,6 @@
     <title> Kay's World | Login Authentication</title>
     <meta name="description" content="A demonstration of login authentication.">
     <link href="{% static 'login/style.css' %}" type="text/css" rel="stylesheet">
-    <script src="{% static 'login/login.js' %}" defer></script>
   </head>
 
   <!-- BODY CONTENT -->
@@ -13,67 +12,16 @@
 
       <!-- HEADER -->
       <header>
-        <h1>Kay's World</h1>
+        <a href="{% url 'login:index' %}"><h1>Kay's World</h1></a>
         <div class="rightside">
-          <a id="loginLink" class="head" href="#">Login</a>
-          <a id="signupLink" class="head" href="#">Sign Up</a>
+          <a id="loginLink" class="head" href="{% url 'login:login' %}">Login</a>
+          <a id="signupLink" class="head" href="{% url 'login:signup' %}">Sign Up</a>
       </div>
       </header>
 
       <div class="section">
         <img src="{% static 'login/images/lakhtaCenter.jpg' %}">
         <h3 class="home">Welcome to Kay's World! <br> Login or Sign up to enter the site.</h3>
-      </div>
-
-      <!-- LOGIN -->
-      <div id="loginAlert" class="alert">
-        <div id="closeLogin" class="close">
-          <div class="bar-one"></div>
-          <div class="bar-two"></div>
-        </div>
-        <h2>Login</h2>
-        <br><br>
-
-        <!-- FORM -->
-        <form id="loginForm" novalidate>
-          <input id="emailAddress" name="emailAddress" type="email" placeholder="Email" required><br>
-          <span id="loginEmailErrMsg"></span>
-          <br><br>
-          <input id="passwd" name="passwd"type="password" minlength="8" placeholder="Password" required><br>
-          <span id="loginPasswdErrMsg"></span>
-          <br><br>
-          <button id="loginButton" type="submit">Login</button>
-        </form>
-      </div>
-
-      <!-- SIGNUP -->
-      <div id="signupAlert" class="alert">
-        <div id="closeSignup" class="close">
-          <div class="bar-one"></div>
-          <div class="bar-two"></div>
-        </div>
-        <h2>Sign Up</h2>
-        <br><br>
-
-        <!-- FORM -->
-        <form id="signupForm" novalidate>
-          <input id="firstName" name="firstName" type="text" placeholder="First Name" required><br>
-          <span id="signupFirstNameErrMsg"></span>
-          <br><br>
-          <input id="lastName" name="lastName" type="text" placeholder="Last Name" required><br>
-          <span id="signupLastNameErrMsg"></span>
-          <br><br>
-          <input id="signupEmail" name="signupEmail" type="email" placeholder="Email" required><br>
-          <span id="signupEmailErrMsg"></span>
-          <br><br>
-          <input id="signupPasswd" name="signupPasswd" type="password" minlength="8" placeholder="Password" required><br>
-          <span id="signupPasswdErrMsg"></span>
-          <br><br>
-          <input id="confirmPasswd" name="confirmPasswd" type="password" minlength="8" placeholder="Confirm Password" required><br>
-          <span id="signupConfirmPasswdErrMsg"></span>
-          <br><br>
-          <button id="signupButton" type="submit">Sign up</button>
-        </form>
       </div>
 
 
