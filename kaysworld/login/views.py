@@ -23,7 +23,6 @@ def login(request):
 
         if form.is_valid():
             email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
 
             user = User.objects.get(email=email)
 

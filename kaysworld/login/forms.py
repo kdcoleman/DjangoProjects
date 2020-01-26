@@ -15,16 +15,16 @@ class LoginForm(forms.Form):
             try:
                 User.objects.get(email=email, password=password)
             except User.DoesNotExist:
-                self.add_error('password', "Incorrect password")
-                
+                self.add_error('password',"Incorrect password")
+                raise forms.ValidationError("Incorrect password")
+
 
     def clean_email(self):
         email = self.cleaned_data['email']
         try:
             User.objects.get(email=email)
         except User.DoesNotExist:
-            self.add_error('email', "Account not found")
-            return email
+            raise forms.ValidationError("Account not found")
 
         return email
 
@@ -44,6 +44,7 @@ class SignupForm(forms.Form):
         if password and confirm_password:
             if password != confirm_password:
                 self.add_error('confirm_password', "Password does not match")
+                raise forms.ValidationError("Password does not match")
 
 
     def clean_email(self):
@@ -53,6 +54,6 @@ class SignupForm(forms.Form):
         except User.DoesNotExist:
             return email
         else:
-            self.add_error('email', "Sorry, this email is already in use")
+            raise forms.ValidationError("Sorry, this email is already in use")
 
         return email
