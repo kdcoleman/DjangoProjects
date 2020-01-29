@@ -1,4 +1,5 @@
 {% load static %}
+{% load tz %}
 
 <html lang="en-US">
   <head>
@@ -8,12 +9,13 @@
   </head>
 
   <!-- BODY CONTENT -->
-  <body onload="showWelcomeMessage()">
+  <body onload="showWelcomeMessage(); resetTimer()">
     <div class="container">
 
       <header>
         <h1>Kay's World</h1>
         <div class="rightside">
+          <a id="signupLink" class="head" href="{% url 'login:home' user.id %}">Activity</a>
           <a id="logoutLink" class="head" href="{% url 'login:index' %}">Logout</a>
       </div>
       </header>
@@ -32,6 +34,14 @@
       </div>
 
 
+      <div id="inactiveAlert" class="alert">
+        <h2>Inactive Alert</h2><br><br>
+        <p id="inactiveMsg">Your session is about to expire.</p>
+        <br><br>
+        <button id="stayButton" type="submit">Stay Logged In</button>
+        <!-- <button id="loginAgainButton" type="submit">Login</button> -->
+      </div>
+
       <!-- FOOTER -->
       <footer> Created by: Kayla D. Coleman </footer>
 
@@ -40,6 +50,9 @@
     <script>
       let welcomeAlert = document.getElementById('welcomeAlert');
       let closeWelcome = document.getElementById('closeWelcome');
+      let inactiveAlert = document.getElementById('inactiveAlert');
+      let stayButton = document.getElementById('stayButton');
+      // let loginAgainButton = document.getElementById('loginAgainButton');
       let welcomeMsg = document.getElementById('welcomeMsg');
       let returningUser = {{user.email_confirmed|lower}};
 
@@ -59,6 +72,32 @@
           welcomeMsg.textContent = returningUserMsg;
         }
       }
+
+      var inactiveTime;
+      var inactiveInterval;
+      var events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'onclick'];
+
+      events.forEach(function(name) {
+       document.addEventListener(name, resetTimer, true);
+      });
+
+      function logout() {
+        inactiveAlert.classList.add('active');
+      }
+
+      function resetTimer() {
+        clearTimeout(inactiveTime);
+        inactiveTime = setTimeout(logout, 1000*60*4);
+      }
+
+      stayButton.addEventListener('click', function(){
+        window.location.href = "{% url 'login:home' user.id %}";
+      })
+
+      // loginAgainButton.addEventListener('click', function(){
+      //   window.location.href = "{% url 'login:index' %}";
+      // })
+
     </script>
 
   </body>

@@ -9,12 +9,20 @@ from .forms import LoginForm, SignupForm
 # Create your views here.
 
 def index(request):
+    try:
+        del request.session['user_id']
+        request.session.flush()
+    except KeyError:
+        pass
     return render(request, 'login/index.html')
 
 
 def home(request, user_id):
-    user = get_object_or_404(User, pk=user_id)
-    return render(request, 'login/home.html', {'user': user})
+    if request.session.get('user_id'):
+        user = get_object_or_404(User, pk=request.session.get('user_id'))
+        return render(request, 'login/home.html', {'user': user})
+    else:
+        return HttpResponseRedirect(reverse('login:index'))
 
 
 def login(request):
@@ -23,10 +31,15 @@ def login(request):
 
         if form.is_valid():
             email = form.cleaned_data['email']
-
+            password = form.cleaned_data['password']
             user = User.objects.get(email=email)
 
-            return HttpResponseRedirect(reverse('login:home', args=(user.id,)))
+            if user.password == password:
+                request.session['user_id'] = user.id
+                request.session.set_expiry(300)
+                return HttpResponseRedirect(reverse('login:home', args=(request.session['user_id'],)))
+            else:
+                return render(request, 'login/login.html', {'form': form})
 
     else:
         form = LoginForm()
@@ -48,7 +61,10 @@ def signup(request):
             password=password, join_date=timezone.now())
             user.save()
 
-            return HttpResponseRedirect(reverse('login:home', args=(user.id,)))
+            request.session['user_id'] = user.id
+            request.session.set_expiry(300)
+
+            return HttpResponseRedirect(reverse('login:home', args=(request.session['user_id'],)))
 
     else:
         form = SignupForm()
