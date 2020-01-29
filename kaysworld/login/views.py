@@ -22,7 +22,7 @@ def home(request, user_id):
         user = get_object_or_404(User, pk=request.session.get('user_id'))
         return render(request, 'login/home.html', {'user': user})
     else:
-        return HttpResponseRedirect(reverse('login:index'))
+        return HttpResponseRedirect(reverse('login:login'))
 
 
 def login(request):

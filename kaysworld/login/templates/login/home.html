@@ -35,11 +35,11 @@
 
 
       <div id="inactiveAlert" class="alert">
-        <h2>Inactive Alert</h2><br><br>
-        <p id="inactiveMsg">Your session is about to expire.</p>
+        <h2 id="inactiveHeading"></h2>
+        <br>
+        <p id="inactiveMsg"></p>
         <br><br>
-        <button id="stayButton" type="submit">Stay Logged In</button>
-        <!-- <button id="loginAgainButton" type="submit">Login</button> -->
+        <button id="inactiveButton" type="submit"></button>
       </div>
 
       <!-- FOOTER -->
@@ -51,8 +51,9 @@
       let welcomeAlert = document.getElementById('welcomeAlert');
       let closeWelcome = document.getElementById('closeWelcome');
       let inactiveAlert = document.getElementById('inactiveAlert');
-      let stayButton = document.getElementById('stayButton');
-      // let loginAgainButton = document.getElementById('loginAgainButton');
+      let inactiveHeading = document.getElementById('inactiveHeading');
+      let inactiveMsg = document.getElementById('inactiveMsg');
+      let inactiveButton = document.getElementById('inactiveButton');
       let welcomeMsg = document.getElementById('welcomeMsg');
       let returningUser = {{user.email_confirmed|lower}};
 
@@ -74,29 +75,46 @@
       }
 
       var inactiveTime;
-      var inactiveInterval;
+      var logoutTime;
       var events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'onclick'];
 
       events.forEach(function(name) {
        document.addEventListener(name, resetTimer, true);
       });
 
-      function logout() {
+      function stayActive() {
+        inactiveHeading.textContent = "Inactive Alert";
+        inactiveMsg.textContent = "Your session is about to expire.";
+        inactiveButton.textContent = "Stay Logged In";
+
+        inactiveButton.addEventListener('click', function(){
+          window.location.href = "{% url 'login:home' user.id %}";
+        })
+
         inactiveAlert.classList.add('active');
+
+        logoutTime = setTimeout(logout, 1000*60);
+
+      }
+
+      function logout() {
+        inactiveHeading.textContent = "Expired Session";
+        inactiveMsg.textContent = "Your session has expired.";
+        inactiveButton.textContent = "Login";
+
+        inactiveButton.addEventListener('click', function(){
+          window.location.href = "{% url 'login:login' %}";
+        })
+
+        inactiveAlert.classList.add('active');
+
       }
 
       function resetTimer() {
         clearTimeout(inactiveTime);
-        inactiveTime = setTimeout(logout, 1000*60*4);
+        inactiveTime = setTimeout(stayActive, 1000*60*4);
       }
 
-      stayButton.addEventListener('click', function(){
-        window.location.href = "{% url 'login:home' user.id %}";
-      })
-
-      // loginAgainButton.addEventListener('click', function(){
-      //   window.location.href = "{% url 'login:index' %}";
-      // })
 
     </script>
 
