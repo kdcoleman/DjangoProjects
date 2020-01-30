@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 from django.urls import reverse
 
@@ -36,6 +36,7 @@ def login(request):
 
             if user.password == password:
                 request.session['user_id'] = user.id
+                request.session['last_activity'] = str(timezone.now())
                 request.session.set_expiry(300)
                 return HttpResponseRedirect(reverse('login:home', args=(request.session['user_id'],)))
             else:
@@ -62,6 +63,7 @@ def signup(request):
             user.save()
 
             request.session['user_id'] = user.id
+            request.session['last_activity'] = str(timezone.now())
             request.session.set_expiry(300)
 
             return HttpResponseRedirect(reverse('login:home', args=(request.session['user_id'],)))
@@ -70,3 +72,11 @@ def signup(request):
         form = SignupForm()
 
     return render(request, 'login/signup.html', {'form': form})
+
+
+def extend_session(request):
+    if request.session.get('user_id'):
+        request.session['last_activity'] = str(timezone.now())
+        return HttpResponse("Session extended")
+    else:
+        return HttpResponseRedirect(reverse('login:login'))
