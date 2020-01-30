@@ -57,6 +57,7 @@
       let welcomeMsg = document.getElementById('welcomeMsg');
       let returningUser = {{user.email_confirmed|lower}};
 
+      // Welcome message
       closeWelcome.addEventListener('click', function(){
         welcomeAlert.classList.remove('active');
       })
@@ -74,24 +75,29 @@
         }
       }
 
+      // Detect activity on page
       var inactiveTime;
       var logoutTime;
       var events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'onclick'];
+      var checkActivity = setInterval(extendSession, 1000*60*4.5);
 
       events.forEach(function(name) {
        document.addEventListener(name, resetTimer, true);
       });
 
-      function stayActive() {
+      function stayLoggedIn() {
         inactiveHeading.textContent = "Inactive Alert";
         inactiveMsg.textContent = "Your session is about to expire.";
         inactiveButton.textContent = "Stay Logged In";
 
+        clearInterval(checkActivity);
+
         inactiveButton.addEventListener('click', function(){
-          extendSession();
           clearTimeout(logoutTime);
+          extendSession();
           inactiveAlert.classList.remove('active');
           resetTimer();
+          checkActivity = setInterval(extendSession, 1000*60*4.5);
         });
 
         inactiveAlert.classList.add('active');
@@ -101,6 +107,8 @@
       }
 
       function logout() {
+        expireSession();
+
         inactiveHeading.textContent = "Expired Session";
         inactiveMsg.textContent = "Your session has expired.";
         inactiveButton.textContent = "Login";
@@ -115,9 +123,10 @@
 
       function resetTimer() {
         clearTimeout(inactiveTime);
-        inactiveTime = setTimeout(stayActive, 1000*60*4);
+        inactiveTime = setTimeout(stayLoggedIn, 1000*60*4);
       }
 
+      // Keep session alive if active
       function extendSession() {
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function(){
@@ -129,6 +138,17 @@
         xmlHttp.send();
       }
 
+      // Expire session if inactive
+      function expireSession() {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function(){
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                console.log(xmlHttp.responseText);
+            }
+        }
+        xmlHttp.open("GET", "{% url 'login:expire' %}", true);
+        xmlHttp.send();
+      }
 
     </script>
 
