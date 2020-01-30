@@ -79,7 +79,7 @@
       var inactiveTime;
       var logoutTime;
       var events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'onclick'];
-      var checkActivity = setInterval(extendSession, 1000*60*4.5);
+      var checkActivity = setInterval(extendSession, 1000*50*4.5);
 
       events.forEach(function(name) {
        document.addEventListener(name, resetTimer, true);
@@ -92,18 +92,20 @@
 
         clearInterval(checkActivity);
 
-        inactiveButton.addEventListener('click', function(){
-          clearTimeout(logoutTime);
-          extendSession();
-          inactiveAlert.classList.remove('active');
-          resetTimer();
-          checkActivity = setInterval(extendSession, 1000*60*4.5);
-        });
+        inactiveButton.addEventListener('click', clickStayLoggedIn);
 
         inactiveAlert.classList.add('active');
 
         logoutTime = setTimeout(logout, 1000*60);
 
+      }
+
+      function clickStayLoggedIn() {
+        clearTimeout(logoutTime);
+        extendSession();
+        inactiveAlert.classList.remove('active');
+        resetTimer();
+        checkActivity = setInterval(extendSession, 1000*60*4.5);
       }
 
       function logout() {
@@ -112,6 +114,8 @@
         inactiveHeading.textContent = "Expired Session";
         inactiveMsg.textContent = "Your session has expired.";
         inactiveButton.textContent = "Login";
+
+        inactiveButton.removeEventListener('click', clickStayLoggedIn);
 
         inactiveButton.addEventListener('click', function(){
           window.location.href = "{% url 'login:login' %}";
@@ -131,7 +135,12 @@
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function(){
             if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+              if (xmlHttp.responseText == "Session already expired"){
+                window.location.href = "{% url 'login:login' %}";
+              }
+              else {
                 console.log(xmlHttp.responseText);
+              }
             }
         }
         xmlHttp.open("GET", "{% url 'login:extend' %}", true);

@@ -37,7 +37,7 @@ def login(request):
             if user.password == password:
                 request.session['user_id'] = user.id
                 request.session['last_activity'] = str(timezone.now())
-                request.session.set_expiry(30)
+                request.session.set_expiry(300)
                 return HttpResponseRedirect(reverse('login:home', args=(request.session['user_id'],)))
             else:
                 return render(request, 'login/login.html', {'form': form})
@@ -88,4 +88,4 @@ def extend_session(request):
         request.session['last_activity'] = str(timezone.now())
         return HttpResponse("Session extended")
     else:
-        return HttpResponseRedirect(reverse('login:login'))
+        return HttpResponse("Session already expired")
