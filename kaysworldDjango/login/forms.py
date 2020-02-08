@@ -56,17 +56,6 @@ class SignupForm(UserCreationForm):
         self.fields['password2'].widget = forms.PasswordInput(attrs={'placeholder': 'Confirm Password'})
 
 
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get('password1')
-        confirm_password = cleaned_data.get('password2')
-
-        if password and confirm_password:
-            if password != confirm_password:
-                self.add_error('confirm_password', "Password does not match")
-                raise forms.ValidationError("Password does not match")
-
-
     def clean_email(self):
         email = self.cleaned_data.get('email')
         try:
