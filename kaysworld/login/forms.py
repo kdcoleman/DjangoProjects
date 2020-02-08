@@ -8,19 +8,20 @@ class LoginForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        email = cleaned_data.get("email")
-        password = cleaned_data.get("password")
+        email = cleaned_data.get('email')
+        password = cleaned_data.get('password')
 
         if email and password:
             try:
                 User.objects.get(email=email, password=password)
             except User.DoesNotExist:
-                self.add_error('password',"Incorrect password")
-                raise forms.ValidationError("Incorrect password")
+                self.add_error('password', forms.ValidationError("Incorrect password"))
+
+        return cleaned_data
 
 
     def clean_email(self):
-        email = self.cleaned_data['email']
+        email = self.cleaned_data.get('email')
         try:
             User.objects.get(email=email)
         except User.DoesNotExist:
@@ -43,12 +44,11 @@ class SignupForm(forms.Form):
 
         if password and confirm_password:
             if password != confirm_password:
-                self.add_error('confirm_password', "Password does not match")
-                raise forms.ValidationError("Password does not match")
+                self.add_error('confirm_password', forms.ValidationError("Password does not match"))
 
 
     def clean_email(self):
-        email = self.cleaned_data['email']
+        email = self.cleaned_data.get('email')
         try:
             User.objects.get(email=email)
         except User.DoesNotExist:
