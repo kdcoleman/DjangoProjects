@@ -1,0 +1,75 @@
+{% load static %}
+<html lang="en-US">
+  <head>
+    <title> Kay's World | Login Authentication</title>
+    <meta name="description" content="A demonstration of login authentication.">
+    <link href="{% static 'login/style.css' %}" type="text/css" rel="stylesheet">
+  </head>
+
+  <!-- BODY CONTENT -->
+  <body>
+    <div class="container">
+
+      <!-- HEADER -->
+      <header>
+        <a href="{% url 'login:index' %}"><h1>Kay's World</h1></a>
+        <div class="rightside">
+          <a id="loginLink" class="head" href="{% url 'login:login' %}">Login</a>
+          <a id="signupLink" class="head" href="{% url 'login:signup' %}">Sign Up</a>
+      </div>
+      </header>
+
+      <div class="section">
+        <img src="{% static 'login/images/lakhtaCenter.jpg' %}">
+        <h3 class="home">Welcome to Kay's World! <br> Login or Sign up to enter the site.</h3>
+      </div>
+
+      <!-- SIGNUP -->
+      <div id="signupAlert" class="alert active">
+        <div id="closeSignup" class="close">
+          <div class="bar-one"></div>
+          <div class="bar-two"></div>
+        </div>
+        <h2>Sign Up</h2>
+        <br><br>
+
+        <!-- FORM -->
+        <form id="signupForm" action="" method="post" >
+          {% csrf_token %}
+          {{ form.first_name }}
+          <span id="signupFirstNameErrMsg">{{ form.first_name.errors.as_text }}</span>
+          <br><br>
+          {{ form.last_name }}
+          <span id="signupLastNameErrMsg">{{ form.last_name.errors.as_text }}</span>
+          <br><br>
+          {{ form.email }}
+          <span id="signupEmailErrMsg">{{ form.email.errors.as_text }}</span>
+          <br><br>
+          {{ form.password1 }}
+          <span id="signupPasswdErrMsg">{{ form.password1.errors.as_text }}</span>
+          <br><br>
+          {{ form.password2 }}
+          <span id="signupConfirmPasswdErrMsg">{{ form.password2.errors.as_text }}</span>
+          <br><br>
+          <button id="signupButton" type="submit">Sign up</button>
+        </form>
+      </div>
+
+
+      <!-- FOOTER -->
+      <footer> Created by: Kayla D. Coleman </footer>
+
+    </div>
+
+    <script>
+      let signupAlert = document.getElementById('signupAlert');
+      let closeSignup = document.getElementById('closeSignup');
+
+      // Close signup alert onclick of close button
+      closeSignup.addEventListener('click', function(){
+        signupAlert.classList.toggle('active');
+      })
+    </script>
+
+  </body>
+</html>

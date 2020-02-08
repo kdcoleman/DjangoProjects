@@ -1,0 +1,66 @@
+{% load static %}
+<html lang="en-US">
+  <head>
+    <title> Kay's World | Login Authentication</title>
+    <meta name="description" content="A demonstration of login authentication.">
+    <link href="{% static 'login/style.css' %}" type="text/css" rel="stylesheet">
+  </head>
+
+  <!-- BODY CONTENT -->
+  <body>
+    <div class="container">
+
+      <!-- HEADER -->
+      <header>
+        <a href="{% url 'login:index' %}"><h1>Kay's World</h1></a>
+        <div class="rightside">
+          <a id="loginLink" class="head" href="{% url 'login:login' %}">Login</a>
+          <a id="signupLink" class="head" href="{% url 'login:signup' %}">Sign Up</a>
+      </div>
+      </header>
+
+      <div class="section">
+        <img src="{% static 'login/images/lakhtaCenter.jpg' %}">
+        <h3 class="home">Welcome to Kay's World! <br> Login or Sign up to enter the site.</h3>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginAlert" class="alert active">
+        <div id="closeLogin" class="close">
+          <div class="bar-one"></div>
+          <div class="bar-two"></div>
+        </div>
+        <h2>Login</h2>
+        <br><br>
+
+        <!-- FORM  -->
+        <form id="loginForm" action="" method="post">
+          {% csrf_token %}
+          {{ form.username }}
+          <span id="loginEmailErrMsg">{{ form.username.errors.as_text }}</span>
+          <br><br>
+          {{ form.password }}
+          <span id="loginPasswdErrMsg">{{ form.password.errors.as_text }}</span>
+          <br><br>
+          <button id="loginButton" type="submit">Login</button>
+        </form>
+      </div>
+
+
+      <!-- FOOTER -->
+      <footer> Created by: Kayla D. Coleman </footer>
+
+    </div>
+
+    <script>
+      let loginAlert = document.getElementById('loginAlert');
+      let closeLogin = document.getElementById('closeLogin');
+
+      // Close login alert onclick of close button
+      closeLogin.addEventListener('click', function(){
+        loginAlert.classList.toggle('active');
+      })
+    </script>
+
+  </body>
+</html>

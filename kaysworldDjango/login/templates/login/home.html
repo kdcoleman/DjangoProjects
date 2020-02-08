@@ -1,0 +1,142 @@
+{% load static %}
+{% load tz %}
+
+<html lang="en-US">
+  <head>
+    <title> Kay's World</title>
+    <meta name="description" content="A demonstration of login authentication.">
+    <link href="{% static 'login/style.css' %}" type="text/css" rel="stylesheet">
+  </head>
+
+  <!-- BODY CONTENT -->
+  <body onload="showWelcomeMessage(); resetTimer()">
+    <div class="container">
+
+      <header>
+        <h1>Kay's World</h1>
+        <div class="rightside">
+          <a id="signupLink" class="head" href="{% url 'login:home' user.id %}">Activity</a>
+          <a id="logoutLink" class="head" href="{% url 'login:logout' %}">Logout</a>
+      </div>
+      </header>
+
+      <div class="section">
+        <img src="{% static 'login/images/lakhtaCenter.jpg' %}">
+      </div>
+
+      <div id="welcomeAlert" class="alert active">
+        <div id="closeWelcome" class="close">
+          <div class="bar-one"></div>
+          <div class="bar-two"></div>
+        </div>
+        <h2>Welcome</h2><br>
+        <p id="welcomeMsg"></p>
+      </div>
+
+
+      <div id="inactiveAlert" class="alert">
+        <h2 id="inactiveHeading"></h2>
+        <br>
+        <p id="inactiveMsg"></p>
+        <br><br>
+        <button id="inactiveButton" type="submit"></button>
+      </div>
+
+      <!-- FOOTER -->
+      <footer> Created by: Kayla D. Coleman </footer>
+
+    </div>
+
+    <script>
+      let welcomeAlert = document.getElementById('welcomeAlert');
+      let closeWelcome = document.getElementById('closeWelcome');
+      let inactiveAlert = document.getElementById('inactiveAlert');
+      let inactiveHeading = document.getElementById('inactiveHeading');
+      let inactiveMsg = document.getElementById('inactiveMsg');
+      let inactiveButton = document.getElementById('inactiveButton');
+      let welcomeMsg = document.getElementById('welcomeMsg');
+      let returningUser = {{user.email_confirmed|lower}};
+
+      // Welcome message
+      closeWelcome.addEventListener('click', function(){
+        welcomeAlert.classList.remove('active');
+      })
+
+      function showWelcomeMessage() {
+        if (!returningUser) {
+          newUserMsg = "Welcome " + "{{user.first_name}}" +
+          "! We're so glad you decided to explore the land of Kay. We sent a confirmation email to "
+          + "{{user.email}}" + ". <br><br> Please confirm your account."
+          welcomeMsg.innerHTML = newUserMsg;
+        } else {
+          returningUserMsg = "Welcome back " + "{{user.first_name}}" +
+          "! Check out what's new since your last time here. Happy exploring!"
+          welcomeMsg.textContent = returningUserMsg;
+        }
+      }
+
+      // Detect activity on page
+      var inactiveTime;
+      var logoutTime;
+      var events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'onclick'];
+
+      events.forEach(function(name) {
+       document.addEventListener(name, resetTimer, true);
+      });
+
+      function stayLoggedIn() {
+        inactiveHeading.textContent = "Inactive Alert";
+        inactiveMsg.textContent = "Your session is about to expire.";
+        inactiveButton.textContent = "Stay Logged In";
+
+        inactiveButton.addEventListener('click', clickStayLoggedIn);
+        inactiveAlert.classList.add('active');
+        logoutTime = setTimeout(logout, 1000*60);
+
+      }
+
+      function clickStayLoggedIn() {
+        clearTimeout(logoutTime);
+        inactiveAlert.classList.remove('active');
+        resetTimer();
+      }
+
+      function logout() {
+        logoutUser();
+
+        inactiveHeading.textContent = "Expired Session";
+        inactiveMsg.textContent = "Your session has expired.";
+        inactiveButton.textContent = "Login";
+
+        inactiveButton.removeEventListener('click', clickStayLoggedIn);
+
+        inactiveButton.addEventListener('click', function(){
+          window.location.href = "{% url 'login:login' %}";
+        })
+
+        inactiveAlert.classList.add('active');
+
+      }
+
+      function resetTimer() {
+        clearTimeout(inactiveTime);
+        inactiveTime = setTimeout(stayLoggedIn, 1000*60*4);
+      }
+
+
+      // Expire session if inactive
+      function logoutUser() {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function(){
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                console.log("User logged out");
+            }
+        }
+        xmlHttp.open("GET", "{% url 'login:logout' %}", true);
+        xmlHttp.send();
+      }
+
+    </script>
+
+  </body>
+</html>
