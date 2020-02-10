@@ -68,19 +68,22 @@ def signup(request):
 
             if user is not None:
                 auth_login(request, user)
+                send_confirmation_email = False
 
-                current_site = get_current_site(request)
-                mail_subject = "Confirm your Kay's World account"
-                message = render_to_string('login/confirm.html', {
-                    'user': user,
-                    'domain': current_site.domain,
-                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': confirm_account_token.make_token(user),
-                })
-                to_email = email
-                email_message = EmailMessage(mail_subject, message, to=[to_email])
-                email_message.content_subtype = "html"
-                email_message.send()
+                if send_confirmation_email:
+
+                    current_site = get_current_site(request)
+                    mail_subject = "Confirm your Kay's World account"
+                    message = render_to_string('login/confirm.html', {
+                        'user': user,
+                        'domain': current_site.domain,
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                        'token': confirm_account_token.make_token(user),
+                    })
+                    to_email = email
+                    email_message = EmailMessage(mail_subject, message, to=[to_email])
+                    email_message.content_subtype = "html"
+                    email_message.send()
 
                 return HttpResponseRedirect(reverse('login:home', args=(user.id,)))
 
