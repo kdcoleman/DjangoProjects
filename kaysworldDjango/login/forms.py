@@ -23,7 +23,7 @@ class LoginForm(AuthenticationForm):
         if email and password:
             self.user_cache = authenticate(self.request, email=email, password=password)
             if self.user_cache is None:
-                self.add_error('password', forms.ValidationError("Incorrect password"))
+                self.add_error('password', forms.ValidationError("Incorrect password."))
             else:
                 self.confirm_login_allowed(self.user_cache)
 
@@ -31,13 +31,13 @@ class LoginForm(AuthenticationForm):
 
 
     def clean_username(self):
-        email = self.cleaned_data.get('username')
+        username = self.cleaned_data.get('username')
         try:
-            User.objects.get(email=email)
+            User.objects.get(email=username)
         except User.DoesNotExist:
-            raise forms.ValidationError("Account not found")
+            raise forms.ValidationError("Account not found. Verify the email is correct.")
 
-        return email
+        return username
 
 
 class SignupForm(UserCreationForm):
@@ -63,6 +63,6 @@ class SignupForm(UserCreationForm):
         except User.DoesNotExist:
             return email
         else:
-            raise forms.ValidationError("Sorry, this email is already in use")
+            raise forms.ValidationError("Sorry, this email is already in use.")
 
         return email
