@@ -25,8 +25,6 @@ def home(request, user_id):
     if request.user.is_authenticated:
         user = get_object_or_404(User, pk=user_id)
         return render(request, 'login/home.html', {'user': user})
-    else:
-        return HttpResponseRedirect(reverse('login:login'))
 
 
 def login(request):

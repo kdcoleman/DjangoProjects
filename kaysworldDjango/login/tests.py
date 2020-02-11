@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.auth import get_user
 from .models import User
 from .forms import LoginForm, SignupForm
 
@@ -149,6 +150,35 @@ class UserLoginFormTests(TestCase):
         self.assertEquals(form.errors['password'], ['Incorrect password.'])
 
 
+class UserHomeViewTests(TestCase):
+    def test_home_view_with_authenticated_user(self):
+        """
+        Authenticated user is directed to the home page.
+        """
+        user = User.objects.create_user(first_name='Jane', last_name='Doe',
+                    email='janedoe@example.com', password='Testing1!')
+
+        self.client.login(email=user.email, password='Testing1!')
+        response = self.client.get(reverse('login:home', args=(user.id,)))
+
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_home_view_with_non_authenticated_user(self):
+        """
+        A user that is not authenticated is redirected to the login page.
+        """
+        new_user = User.objects.create_user(first_name='Jane', last_name='Doe',
+                    email='janedoe@example.com', password='Testing1!')
+
+        response = self.client.get(reverse('login:home', args=(new_user.id,)), follow=True)
+        user = get_user(self.client)
+
+        self.assertFalse(user.is_authenticated)
+        self.assertRedirects(response, '/login/login/?next=/login/{}/home/'.format(new_user.id), status_code=302, target_status_code=200)
+        self.assertEqual(len(response.redirect_chain), 1)
+
+
 class UserLoginViewTests(TestCase):
     def test_login_view_with_valid_credentials(self):
         """
@@ -274,10 +304,10 @@ class UserLogoutViewTests(TestCase):
 
     def test_user_login_and_logout(self):
         """
-        Login a user, then logut and redirect to the login view.
+        Login a user, then logout and redirect to the login view.
         """
 
-        new_user = User.objects.create_user(first_name='Jane', last_name='Doe',
+        user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
         data = {'username': 'janedoe@example.com',
