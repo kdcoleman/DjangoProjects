@@ -28,6 +28,25 @@ class UserSignupFormTests(TestCase):
         self.assertEquals(form.errors['password2'], ['This field is required.'])
 
 
+    def test_signup_form_with_invalid_email_format(self):
+        """
+        The signup form returns an email field error when an email that's not in
+        email format is provided.
+        """
+
+        data = {'first_name': 'First',
+                'last_name': 'Last',
+                'email': 'Not an email',
+                'password1': 'Testing2!',
+                'password2': 'Testing2!'
+        }
+
+        form = SignupForm(data)
+
+        self.assertFalse(form.is_valid())
+        self.assertEquals(form.errors['email'], ['Enter a valid email address.'])
+
+
     def test_signup_form_with_valid_new_user_data(self):
         """
         The signup form is valid when valid data is provided.
@@ -97,6 +116,22 @@ class UserLoginFormTests(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEquals(form.errors['username'], ['This field is required.'])
         self.assertEquals(form.errors['password'], ['This field is required.'])
+
+
+    def test_login_form_with_invalid_email_format(self):
+        """
+        The signup form returns an email field error when an email that's not in
+        email format is provided.
+        """
+
+        data = {'username': 'Not an email',
+                'password': 'Testing1!'
+        }
+
+        form = LoginForm(data=data)
+
+        self.assertFalse(form.is_valid())
+        self.assertEquals(form.errors['username'], ['Enter a valid email address.'])
 
 
     def test_login_form_with_valid_credentials(self):
