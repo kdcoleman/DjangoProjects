@@ -109,6 +109,10 @@
       }
 
       function logout() {
+        events.forEach(function(name) {
+         document.addEventListener(name, resetTimer, true);
+        });
+        
         expireSession();
 
         inactiveHeading.textContent = "Expired Session";
