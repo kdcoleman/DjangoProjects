@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate
+from django.core.validators import validate_email
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import User
 # Create forms here.
@@ -33,9 +34,12 @@ class LoginForm(AuthenticationForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
         try:
+            validate_email(username)
             User.objects.get(email=username)
         except User.DoesNotExist:
             raise forms.ValidationError("Account not found. Verify the email is correct.")
+        except forms.ValidationError:
+            raise forms.ValidationError("Enter a valid email address.")
 
         return username
 
