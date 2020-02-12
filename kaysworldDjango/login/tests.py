@@ -210,7 +210,7 @@ class UserHomeViewTests(TestCase):
         user = get_user(self.client)
 
         self.assertFalse(user.is_authenticated)
-        self.assertRedirects(response, '/login/login/?next=/login/{}/home/'.format(new_user.id), status_code=302, target_status_code=200)
+        self.assertRedirects(response, '/accounts/login/?next=/accounts/{}/home/'.format(new_user.id), status_code=302, target_status_code=200)
         self.assertEqual(len(response.redirect_chain), 1)
 
 
@@ -226,7 +226,7 @@ class UserLoginViewTests(TestCase):
                 'password': 'Testing1!'
         }
 
-        response = self.client.post('/login/login/', data, follow=True)
+        response = self.client.post('/accounts/login/', data, follow=True)
 
         self.assertRedirects(response, reverse('login:home', args=(user.id,)), status_code=302, target_status_code=200)
         self.assertEqual(len(response.redirect_chain), 1)
@@ -244,7 +244,7 @@ class UserLoginViewTests(TestCase):
                 'password': 'Testing1!'
         }
 
-        response = self.client.post('/login/login/', data)
+        response = self.client.post('/accounts/login/', data)
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Account not found. Verify the email is correct.')
@@ -262,7 +262,7 @@ class UserLoginViewTests(TestCase):
                 'password': 'Testing2!'
         }
 
-        response = self.client.post('/login/login/', data)
+        response = self.client.post('/accounts/login/', data)
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Incorrect password.')
@@ -280,7 +280,7 @@ class UserSignupViewTests(TestCase):
                 'password2': 'Testing!'
         }
 
-        response = self.client.post('/login/signup/', data, follow=True)
+        response = self.client.post('/accounts/signup/', data, follow=True)
         user = User.objects.get(email='email@example.com')
 
         self.assertRedirects(response, reverse('login:home', args=(user.id,)), status_code=302, target_status_code=200)
@@ -302,7 +302,7 @@ class UserSignupViewTests(TestCase):
                 'password2': 'Testing!'
         }
 
-        response = self.client.post('/login/signup/', data)
+        response = self.client.post('/accounts/signup/', data)
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Sorry, this email is already in use.')
@@ -320,7 +320,7 @@ class UserSignupViewTests(TestCase):
                 'password2': 'testing!'
         }
 
-        response = self.client.post('/login/signup/', data)
+        response = self.client.post('/accounts/signup/', data)
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'The two password fields didn’t match.')
@@ -331,7 +331,7 @@ class UserLogoutViewTests(TestCase):
         """
         Logout view redirects to login view even when user is not logged in.
         """
-        response = self.client.get('/login/logout/', follow=True)
+        response = self.client.get('/accounts/logout/', follow=True)
 
         self.assertRedirects(response, reverse('login:login'), status_code=302, target_status_code=200)
         self.assertEqual(len(response.redirect_chain), 1)
@@ -349,9 +349,9 @@ class UserLogoutViewTests(TestCase):
                 'password': 'Testing1!'
         }
 
-        self.client.post('/login/login/', data)
+        self.client.post('/accounts/login/', data)
 
-        response = self.client.get('/login/logout/', follow=True)
+        response = self.client.get('/accounts/logout/', follow=True)
 
         self.assertRedirects(response, reverse('login:login'), status_code=302, target_status_code=200)
         self.assertEqual(len(response.redirect_chain), 1)

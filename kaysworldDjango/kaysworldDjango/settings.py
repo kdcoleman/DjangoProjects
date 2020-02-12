@@ -64,7 +64,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-LOGIN_URL = '/login/login/'
+LOGIN_URL = '/accounts/login/'
 
 ROOT_URLCONF = 'kaysworldDjango.urls'
 
