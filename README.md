@@ -1,6 +1,6 @@
 # Django Projects
 
-## Login Authentication with User, Authentication, and Login using Sessions
+## User Creation, Authentication, and Login/Logout using Sessions
 
  #### Project:
  Extend **Login Authentication** project from [Javascript Projects](https://github.com/kdcoleman/JavascriptProjects) to create, authenticate, and login/logout a user
