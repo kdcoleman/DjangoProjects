@@ -35,9 +35,8 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-LOGIN_URL = 'users:login'
-LOGIN_REDIRECT_URL = 'users:home'
-LOGOUT_REDIRECT_URL = 'users:index'
+ACCOUNT_ADAPTER = 'kaysworldAllAuth.adapter.MyAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'kaysworldAllAuth.adapter.MySocialAccountAdapter'
 
 # Application definition
 
@@ -50,12 +49,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sslserver',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.pinterest',
 ]
 
 SITE_ID = 1
@@ -64,6 +63,15 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+ACCOUNT_FORMS = {
+    'login': 'kaysworldAllAuth.forms.UserLoginForm',
+    'signup': 'kaysworldAllAuth.forms.UserSignupForm'
+}
+
+SOCIALACCOUNT_FORMS = {
+    'signup': 'kaysworldAllAuth.forms.UserSocialSignupForm'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
