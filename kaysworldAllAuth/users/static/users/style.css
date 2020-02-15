@@ -1,3 +1,4 @@
+{% load static %}
 /* Stylesheet for Login Authentication
 Theme Name: Authenticate
 Author: Kayla D. Coleman
@@ -6,6 +7,7 @@ Author URI: www.github.com/kdcoleman
 
 /* Downloaded Fonts*/
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Poppins:300&display=swap);
 
 /***************************** GENERIC ELEMENTS *******************************/
 
@@ -89,7 +91,7 @@ img {
 button {
   background-color: #8BCAF7;
   border: 1px solid #8BCAF7;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0px 1px 2px #CCC;
   color: #FFF;
   font-size: 16px;
@@ -100,12 +102,25 @@ button {
   width: 70%;
 }
 
-a.head {
-  color: #8BCAF7;
+button:hover {
+  cursor: pointer;
+}
+
+a {
+  color: #AFAFAF;
   font-family: 'Roboto', sans-serif;
-  font-size: 20px;
+  font-size: 14px;
   text-decoration: none;
   margin: 10px;
+}
+
+a:hover {
+  color: #8BCAF7;
+}
+
+a.head {
+  color: #8BCAF7;
+  font-size: 20px;
 }
 
 a.head:hover {
@@ -235,6 +250,83 @@ header {
   .close .bar-two {
     transform: translate(0,-1px) rotate(-45deg);
   }
+
+/* Style social login buttons */
+.loginBtn {
+  box-sizing: border-box;
+  position: relative;
+  width: 70%;
+  margin: 10px;
+  padding: 10px 15px 11px 46px;
+  border: none;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #FFF;
+  display: inline-block;
+  text-decoration: none;
+}
+.loginBtn:before {
+  content: "";
+  box-sizing: border-box;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  position: absolute;
+  top: 0;
+  left: 5px;
+  width: 40px;
+  height: 100%;
+}
+.loginBtn:focus {
+  outline: none;
+}
+.loginBtn:active {
+  box-shadow: inset 0 0 0 32px rgba(0,0,0,0.1);
+}
+
+
+  /* Facebook */
+  .loginBtn--facebook {
+    background-color: #1877F2;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0px 1px 2px #CCC;
+  }
+  .loginBtn--facebook:before {
+    background: url('images/facebookIcon.svg') no-repeat;
+    background-size: 70%;
+    background-position: center;
+  }
+  .loginBtn--facebook:hover,
+  .loginBtn--facebook:focus {
+    color: #FFF;
+    background-color: #1877F2;
+    opacity: 0.9;
+  }
+
+
+  /* Google */
+  .loginBtn--google {
+    color: #7C7B7B;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    background: #FFF;
+    border: #CCC 1px solid;
+    box-shadow: 0px 1px 2px #CCC;
+  }
+  .loginBtn--google:before {
+    background: url('images/googleIcon.png') no-repeat;
+    background-size: 70%;
+    background-position: center;
+  }
+  .loginBtn--google:hover,
+  .loginBtn--google:focus {
+    color: #4285F4;
+    background: #FFF;
+    opacity: 0.9;
+  }
+
 
 /********************************** FOOTER ************************************/
 footer {
