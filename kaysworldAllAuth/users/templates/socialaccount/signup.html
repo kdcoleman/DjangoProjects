@@ -1,0 +1,29 @@
+{% extends "socialaccount/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Social Signup | Kay's World" %}{% endblock %}
+
+{% block content %}
+
+<div id="socialSignupAlert" class="alert active">
+  <h2>{% trans "Sign Up" %}</h2>
+  <p>{% blocktrans with provider_name=account.get_provider.name site_name=site.name %}
+    You are about to use your {{provider_name}} account to login. Please confirm
+    your information.{% endblocktrans %}</p><br><br>
+
+  <form id="signupForm" method="POST" action="{% url 'socialaccount_signup' %}" >
+    {% csrf_token %}
+    {{ form.first_name }}
+    <span id="signupFirstNameErrMsg">{{ form.first_name.errors.as_text }}</span>
+    <br><br>
+    {{ form.last_name }}
+    <span id="signupLastNameErrMsg">{{ form.last_name.errors.as_text }}</span>
+    <br><br>
+    {{ form.email }}
+    <span id="signupEmailErrMsg">{{ form.email.errors.as_text }}</span>
+    <br><br>
+    <button id="signupButton" type="submit">{% trans "Sign Up" %}</button>
+  </form>
+</div>
+{% endblock %}

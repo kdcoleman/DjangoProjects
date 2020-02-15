@@ -1,0 +1,53 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Login | Kay's World" %}{% endblock %}
+
+{% block content %}
+
+{% get_providers as socialaccount_providers %}
+
+<!-- LOGIN -->
+<div id="loginAlert" class="alert active">
+  <div id="closeLogin" class="close">
+    <div class="bar-one"></div>
+    <div class="bar-two"></div>
+  </div>
+  <h2>{% trans "Login" %}</h2>
+  <br><br>
+
+  <!-- FORM  -->
+  <form id="loginForm" method="POST" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    {{ form.login }}
+    <span id="loginEmailErrMsg">{{ form.login.errors.as_text }}</span>
+    <br><br>
+    {{ form.password }}
+    <span id="loginPasswdErrMsg">{{ form.password.errors.as_text }}</span>
+    <br><br>
+    <button id="loginButton" type="submit">{% trans "Login" %}</button><br>
+    <a href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+  </form>
+
+{% if socialaccount_providers %}
+  {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+  {% include "socialaccount/snippets/login_extra.html" %}
+{% endif %}
+</div>
+
+{% endblock %}
+
+{% block extra_body %}
+<script>
+  let loginAlert = document.getElementById('loginAlert');
+  let closeLogin = document.getElementById('closeLogin');
+
+  // Close login alert onclick of close button
+  closeLogin.addEventListener('click', function(){
+    loginAlert.classList.toggle('active');
+  })
+</script>
+{% endblock %}

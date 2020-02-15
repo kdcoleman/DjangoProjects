@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block head_title %}{% endblock %}</title>
+    {% block extra_head %}
+    {% endblock %}
+    <link href="{% static 'users/style.css' %}" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+    {% block body %}
+
+      <!-- HEADER -->
+      <header>
+        <a href="{% url 'users:index' %}"><h1>Kay's World</h1></a>
+        <div class="rightside">
+          {% if user.is_authenticated %}
+          <a id="changeEmailLink" class="head" href="{% url 'users:home' user.id %}">Home</a>
+          <a id="logoutLink" class="head" href="{% url 'account_logout' %}">Logout</a>
+          {% else %}
+          <a id="loginLink" class="head" href="{% url 'account_login' %}">Login</a>
+          <a id="signupLink" class="head" href="{% url 'account_signup' %}">Sign Up</a>
+          {% endif %}
+        </div>
+      </header>
+
+      <div class="section">
+        <img src="{% static 'users/images/lakhtaCenter.jpg' %}">
+        {% if not user.is_authenticated %}
+        <h3 class="home">Welcome to Kay's World! <br> Login or Sign up to enter the site.</h3>
+        {% endif %}
+      </div>
+      {% block content %}
+      {% endblock %}
+      {% endblock %}
+      {% block extra_body %}
+      {% endblock %}
+      <!-- FOOTER -->
+      <footer> Created by: Kayla D. Coleman </footer>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,53 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup | Kay's World" %}{% endblock %}
+
+{% block content %}
+
+<!-- SIGNUP -->
+<div id="signupAlert" class="alert active">
+  <div id="closeSignup" class="close">
+    <div class="bar-one"></div>
+    <div class="bar-two"></div>
+  </div>
+  <h2>{% trans "Sign Up" %}</h2>
+  <br><br>
+
+  <!-- FORM -->
+  <form id="signupForm" method="POST" action="{% url 'account_signup' %}" >
+    {% csrf_token %}
+    {{ form.first_name }}
+    <span id="signupFirstNameErrMsg">{{ form.first_name.errors.as_text }}</span>
+    <br><br>
+    {{ form.last_name }}
+    <span id="signupLastNameErrMsg">{{ form.last_name.errors.as_text }}</span>
+    <br><br>
+    {{ form.email }}
+    <span id="signupEmailErrMsg">{{ form.email.errors.as_text }}</span>
+    <br><br>
+    {{ form.password1 }}
+    <span id="signupPasswdErrMsg">{{ form.password1.errors.as_text }}</span>
+    <br><br>
+    {{ form.password2 }}
+    <span id="signupConfirmPasswdErrMsg">{{ form.password2.errors.as_text }}</span>
+    <br><br>
+    <button id="signupButton" type="submit">{% trans "Sign Up" %}</button><br>
+    <a href="{{ login_url }}">{% trans "Already have an account?" %}</a>
+  </form>
+</div>
+
+{% endblock %}
+
+{% block extra_body %}
+<script>
+  let signupAlert = document.getElementById('signupAlert');
+  let closeSignup = document.getElementById('closeSignup');
+
+  // Close signup alert onclick of close button
+  closeSignup.addEventListener('click', function(){
+    signupAlert.classList.toggle('active');
+  })
+</script>
+{% endblock %}
