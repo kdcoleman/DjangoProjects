@@ -1,12 +1,22 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user
-from .models import User
-from .forms import LoginForm, SignupForm
+from django.conf import settings
+from django.contrib.sites.models import Site
+from allauth.socialaccount.models import SocialApp
+from django.contrib.auth import get_user, get_user_model
+from kaysworldAllAuth.forms import UserLoginForm, UserSignupForm
 
 # Create your tests here.
 
 class UserSignupFormTests(TestCase):
+    def setUp(self):
+        if 'allauth.socialaccount' in settings.INSTALLED_APPS:
+            # Otherwise ImproperlyConfigured exceptions may occur
+            sa = SocialApp.objects.create(name='testfb',
+                                          provider='facebook')
+            sa.sites.add(Site.objects.get_current())
+
+
     def test_blank_signup_form(self):
         """
         Signup form with no data
@@ -18,7 +28,7 @@ class UserSignupFormTests(TestCase):
                 'password2': ''
         }
 
-        form = SignupForm(data)
+        form = UserSignupForm(data)
 
         self.assertFalse(form.is_valid())
         self.assertEquals(form.errors['first_name'], ['This field is required.'])
@@ -41,7 +51,7 @@ class UserSignupFormTests(TestCase):
                 'password2': 'Testing2!'
         }
 
-        form = SignupForm(data)
+        form = UserSignupForm(data)
 
         self.assertFalse(form.is_valid())
         self.assertEquals(form.errors['email'], ['Enter a valid email address.'])
@@ -58,7 +68,7 @@ class UserSignupFormTests(TestCase):
                 'password2': 'Testing!'
         }
 
-        form = SignupForm(data)
+        form = UserSignupForm(data)
 
         self.assertTrue(form.is_valid())
 
@@ -75,10 +85,10 @@ class UserSignupFormTests(TestCase):
                 'password2': 'testing!'
         }
 
-        form = SignupForm(data)
+        form = UserSignupForm(data)
 
         self.assertFalse(form.is_valid())
-        self.assertEquals(form.errors['password2'], ['The two password fields didn’t match.'])
+        self.assertEquals(form.errors['password2'], ['You must type the same password each time.'])
 
 
     def test_signup_form_with_taken_email(self):
@@ -86,6 +96,7 @@ class UserSignupFormTests(TestCase):
         The signup form returns an email field error when an email that's already in use
         is provided.
         """
+        User = get_user_model()
         user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
@@ -96,25 +107,33 @@ class UserSignupFormTests(TestCase):
                 'password2': 'Testing2!'
         }
 
-        form = SignupForm(data)
+        form = UserSignupForm(data)
 
         self.assertFalse(form.is_valid())
         self.assertEquals(form.errors['email'], ['Sorry, this email is already in use.'])
 
 
 class UserLoginFormTests(TestCase):
+    def setUp(self):
+        if 'allauth.socialaccount' in settings.INSTALLED_APPS:
+            # Otherwise ImproperlyConfigured exceptions may occur
+            sa = SocialApp.objects.create(name='testfb',
+                                          provider='facebook')
+            sa.sites.add(Site.objects.get_current())
+
+
     def test_blank_login_form(self):
         """
         The login form in invalid when the fields are blank.
         """
-        data = {'username': '',
+        data = {'login': '',
                 'password': ''
         }
 
-        form = LoginForm(data=data)
+        form = UserLoginForm(data=data)
 
         self.assertFalse(form.is_valid())
-        self.assertEquals(form.errors['username'], ['This field is required.'])
+        self.assertEquals(form.errors['login'], ['This field is required.'])
         self.assertEquals(form.errors['password'], ['This field is required.'])
 
 
@@ -124,28 +143,29 @@ class UserLoginFormTests(TestCase):
         email format is provided.
         """
 
-        data = {'username': 'Not an email',
+        data = {'login': 'Not an email',
                 'password': 'Testing1!'
         }
 
-        form = LoginForm(data=data)
+        form = UserLoginForm(data=data)
 
         self.assertFalse(form.is_valid())
-        self.assertEquals(form.errors['username'], ['Enter a valid email address.'])
+        self.assertEquals(form.errors['login'], ['Enter a valid email address.'])
 
 
     def test_login_form_with_valid_credentials(self):
         """
         The login form is valid when valid credentials are provided.
         """
+        User = get_user_model()
         user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
-        data = {'username': 'janedoe@example.com',
+        data = {'login': 'janedoe@example.com',
                 'password': 'Testing1!'
         }
 
-        form = LoginForm(data=data)
+        form = UserLoginForm(data=data)
 
         self.assertTrue(form.is_valid())
 
@@ -154,17 +174,18 @@ class UserLoginFormTests(TestCase):
         """
         Form returns a email field error when the incorrect email is provided.
         """
+        User = get_user_model()
         user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
-        data = {'username': 'janedoe2@example.com',
+        data = {'login': 'janedoe2@example.com',
                 'password': 'Testing1!'
         }
 
-        form = LoginForm(data=data)
+        form = UserLoginForm(data=data)
 
         self.assertFalse(form.is_valid())
-        self.assertEquals(form.errors['username'], ['Account not found. Verify the email is correct.'])
+        self.assertEquals(form.errors['login'], ['Account not found. Verify the email is correct.'])
 
 
     def test_login_form_with_incorrect_password(self):
@@ -172,24 +193,34 @@ class UserLoginFormTests(TestCase):
         Form returns a password field error when the incorrect password
         is provided.
         """
+        User = get_user_model()
         user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
-        data = {'username': 'janedoe@example.com',
+        data = {'login': 'janedoe@example.com',
                 'password': 'Testing2!'
         }
 
-        form = LoginForm(data=data)
+        form = UserLoginForm(data=data)
 
         self.assertFalse(form.is_valid())
-        self.assertEquals(form.errors['password'], ['Incorrect password.'])
+        self.assertEquals(form.errors['password'], ['Incorrect Password.'])
 
 
 class UserHomeViewTests(TestCase):
+    def setUp(self):
+        if 'allauth.socialaccount' in settings.INSTALLED_APPS:
+            # Otherwise ImproperlyConfigured exceptions may occur
+            sa = SocialApp.objects.create(name='testfb',
+                                          provider='facebook')
+            sa.sites.add(Site.objects.get_current())
+
+
     def test_home_view_with_authenticated_user(self):
         """
         Authenticated user is directed to the home page.
         """
+        User = get_user_model()
         user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
@@ -203,6 +234,7 @@ class UserHomeViewTests(TestCase):
         """
         A user that is not authenticated is redirected to the login page.
         """
+        User = get_user_model()
         new_user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
@@ -210,23 +242,32 @@ class UserHomeViewTests(TestCase):
         user = get_user(self.client)
 
         self.assertFalse(user.is_authenticated)
-        self.assertRedirects(response, '/users/login/?next=/users/{}/home/'.format(new_user.id), status_code=302, target_status_code=200)
+        self.assertRedirects(response, '/accounts/login/?next=/users/{}/home/'.format(new_user.id), status_code=302, target_status_code=200)
         self.assertEqual(len(response.redirect_chain), 1)
 
 
 class UserLoginViewTests(TestCase):
+    def setUp(self):
+        if 'allauth.socialaccount' in settings.INSTALLED_APPS:
+            # Otherwise ImproperlyConfigured exceptions may occur
+            sa = SocialApp.objects.create(name='testfb',
+                                          provider='facebook')
+            sa.sites.add(Site.objects.get_current())
+
+
     def test_login_view_with_valid_credentials(self):
         """
         Login view redirects to home view with valid credentials.
         """
+        User = get_user_model()
         user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
-        data = {'username': 'janedoe@example.com',
+        data = {'login': 'janedoe@example.com',
                 'password': 'Testing1!'
         }
 
-        response = self.client.post('/users/login/', data, follow=True)
+        response = self.client.post('/accounts/login/', data, follow=True)
 
         self.assertRedirects(response, reverse('users:home', args=(user.id,)), status_code=302, target_status_code=200)
         self.assertEqual(len(response.redirect_chain), 1)
@@ -237,17 +278,18 @@ class UserLoginViewTests(TestCase):
         When the incorrect email is entered on login form, the form is displayed
         again in the login view with the email field form error.
         """
+        User = get_user_model()
         user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
-        data = {'username': 'janedoe2@example.com',
+        data = {'login': 'janedoe2@example.com',
                 'password': 'Testing1!'
         }
 
-        response = self.client.post('/users/login/', data)
+        response = self.client.post('/accounts/login/', data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Account not found. Verify the email is correct.')
+        self.assertEqual(response.context['form']['login'].errors, ['Account not found. Verify the email is correct.'])
 
 
     def test_login_view_with_incorrect_password(self):
@@ -255,20 +297,29 @@ class UserLoginViewTests(TestCase):
         When the incorrect password is entered on login form, the form is displayed
         again in the login view with the password field form error.
         """
+        User = get_user_model()
         user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
-        data = {'username': 'janedoe@example.com',
+        data = {'login': 'janedoe@example.com',
                 'password': 'Testing2!'
         }
 
-        response = self.client.post('/users/login/', data)
+        response = self.client.post('/accounts/login/', data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Incorrect password.')
+        self.assertEqual(response.context['form']['password'].errors, ['Incorrect Password.'])
 
 
 class UserSignupViewTests(TestCase):
+    def setUp(self):
+        if 'allauth.socialaccount' in settings.INSTALLED_APPS:
+            # Otherwise ImproperlyConfigured exceptions may occur
+            sa = SocialApp.objects.create(name='testfb',
+                                          provider='facebook')
+            sa.sites.add(Site.objects.get_current())
+
+
     def test_signup_view_with_valid_credentials(self):
         """
         Signup view redirects to home view with valid credentials.
@@ -280,7 +331,8 @@ class UserSignupViewTests(TestCase):
                 'password2': 'Testing!'
         }
 
-        response = self.client.post('/users/signup/', data, follow=True)
+        response = self.client.post('/accounts/signup/', data, follow=True)
+        User = get_user_model()
         user = User.objects.get(email='email@example.com')
 
         self.assertRedirects(response, reverse('users:home', args=(user.id,)), status_code=302, target_status_code=200)
@@ -292,6 +344,7 @@ class UserSignupViewTests(TestCase):
         When user enters an email that is already in use, the form is displayed
         again in the signup view with the email field form error.
         """
+        User = get_user_model()
         user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
@@ -302,7 +355,7 @@ class UserSignupViewTests(TestCase):
                 'password2': 'Testing!'
         }
 
-        response = self.client.post('/users/signup/', data)
+        response = self.client.post('/accounts/signup/', data)
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Sorry, this email is already in use.')
@@ -320,20 +373,28 @@ class UserSignupViewTests(TestCase):
                 'password2': 'testing!'
         }
 
-        response = self.client.post('/users/signup/', data)
+        response = self.client.post('/accounts/signup/', data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'The two password fields didn’t match.')
+        self.assertContains(response, 'You must type the same password each time.')
 
 
 class UserLogoutViewTests(TestCase):
+    def setUp(self):
+        if 'allauth.socialaccount' in settings.INSTALLED_APPS:
+            # Otherwise ImproperlyConfigured exceptions may occur
+            sa = SocialApp.objects.create(name='testfb',
+                                          provider='facebook')
+            sa.sites.add(Site.objects.get_current())
+
+
     def test_user_logout(self):
         """
         Logout view redirects to login view even when user is not logged in.
         """
-        response = self.client.get('/users/logout/', follow=True)
+        response = self.client.get('/accounts/logout/', follow=True)
 
-        self.assertRedirects(response, reverse('users:login'), status_code=302, target_status_code=200)
+        self.assertRedirects(response, reverse('users:index'), status_code=302, target_status_code=200)
         self.assertEqual(len(response.redirect_chain), 1)
 
 
@@ -341,7 +402,7 @@ class UserLogoutViewTests(TestCase):
         """
         Login a user, then logout and redirect to the login view.
         """
-
+        User = get_user_model()
         user = User.objects.create_user(first_name='Jane', last_name='Doe',
                     email='janedoe@example.com', password='Testing1!')
 
@@ -349,9 +410,9 @@ class UserLogoutViewTests(TestCase):
                 'password': 'Testing1!'
         }
 
-        self.client.post('/users/login/', data)
+        self.client.post('/accounts/login/', data)
 
-        response = self.client.get('/users/logout/', follow=True)
+        response = self.client.get('/accounts/logout/', follow=True)
 
-        self.assertRedirects(response, reverse('users:login'), status_code=302, target_status_code=200)
+        self.assertRedirects(response, reverse('users:index'), status_code=302, target_status_code=200)
         self.assertEqual(len(response.redirect_chain), 1)
