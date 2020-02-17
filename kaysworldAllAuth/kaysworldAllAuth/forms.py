@@ -1,5 +1,6 @@
 from allauth.account.forms import SignupForm, LoginForm
 from allauth.socialaccount.forms import SignupForm as SocialSignupForm
+from django.contrib.auth import get_user_model
 from django.core import validators
 from django.utils import timezone
 from django import forms
@@ -19,12 +20,13 @@ class UserSignupForm(SignupForm):
 
 
     def signup(self, request, user):
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
+        user.first_name = self.cleaned_data.get('first_name')
+        user.last_name = self.cleaned_data.get('last_name')
         user.date_joined = timezone.now()
         user.save()
 
         return user
+
 
 class UserLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
@@ -38,33 +40,34 @@ class UserLoginForm(LoginForm):
             validators.validate_email(login)
             ret = True
         except exceptions.ValidationError:
-            self.error('login', forms.ValidationError("Enter a valid email address."))
+            self.add_error('login', forms.ValidationError("Enter a valid email address."))
             ret = False
         return ret
 
 
-    def clean(self):
-        super(UserLoginForm, self).clean()
-        if self._errors:
-            return
-        credentials = self.user_credentials()
-        user = get_adapter(self.request).authenticate(
-            self.request,
-            **credentials)
-        if user:
-            self.user = user
-        else:
-            auth_method = app_settings.AUTHENTICATION_METHOD
-            if auth_method == app_settings.AuthenticationMethod.USERNAME_EMAIL:
-                login = self.cleaned_data['login']
-                if self._is_login_email(login):
-                    auth_method = app_settings.AuthenticationMethod.EMAIL
-                else:
-                    auth_method = app_settings.AuthenticationMethod.USERNAME
-            self.error('password', forms.ValidationError("Incorrect password."))
-            raise forms.ValidationError(
-                self.error_messages['%s_password_mismatch' % auth_method])
-        return self.cleaned_data
+    def clean_login(self):
+        login = self.cleaned_data.get('login')
+        User = get_user_model()
+        try:
+            User.objects.get(email=login)
+        except User.DoesNotExist:
+            self.add_error('login', forms.ValidationError("Account not found. Verify the email is correct."))
+
+        return login.strip()
+
+
+    def clean_password(self):
+        login = self.cleaned_data.get('login')
+        password = self.cleaned_data.get('password')
+        User = get_user_model()
+        try:
+            user = User.objects.get(email=login)
+            if not user.check_password(password):
+                self.add_error('password', forms.ValidationError("Incorrect Password."))
+        except User.DoesNotExist:
+            pass
+
+        return password
 
 
 class UserSocialSignupForm(SocialSignupForm):
@@ -79,8 +82,8 @@ class UserSocialSignupForm(SocialSignupForm):
 
 
     def signup(self, request, user):
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
+        user.first_name = self.cleaned_data.get('first_name')
+        user.last_name = self.cleaned_data.get('last_name')
         user.date_joined = timezone.now()
         user.save()
 
