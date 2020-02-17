@@ -48,9 +48,8 @@ class UserLoginForm(LoginForm):
     def clean_login(self):
         login = self.cleaned_data.get('login')
         User = get_user_model()
-        try:
-            User.objects.get(email=login)
-        except User.DoesNotExist:
+        user_exists = User.objects.filter(email=login).exists()
+        if not user_exists:
             self.add_error('login', forms.ValidationError("Account not found. Verify the email is correct."))
 
         return login.strip()

@@ -8,9 +8,8 @@ from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 class MyAccountAdapter(DefaultAccountAdapter):
     def clean_email(self, email):
         User = get_user_model()
-        try:
-            User.objects.get(email=email)
-        except User.DoesNotExist:
+        user_exists = User.objects.filter(email=email).exists()
+        if not user_exists:
             return email
         else:
             raise forms.ValidationError("Sorry, this email is already in use.")
