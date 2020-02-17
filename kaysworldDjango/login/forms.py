@@ -35,11 +35,12 @@ class LoginForm(AuthenticationForm):
         username = self.cleaned_data.get('username')
         try:
             validate_email(username)
-            User.objects.get(email=username)
-        except User.DoesNotExist:
-            raise forms.ValidationError("Account not found. Verify the email is correct.")
         except forms.ValidationError:
             raise forms.ValidationError("Enter a valid email address.")
+        else:
+            user_exists = User.objects.filter(email=username).exists()
+            if not user_exists:
+                raise forms.ValidationError("Account not found. Verify the email is correct.")
 
         return username
 
@@ -62,11 +63,10 @@ class SignupForm(UserCreationForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        try:
-            User.objects.get(email=email)
-        except User.DoesNotExist:
+        user_exists = User.objects.filter(email=email).exists()
+        if not user_exists:
             return email
         else:
-            raise forms.ValidationError("Sorry, this email is already in use.")
+            self.add_error('email', forms.ValidationError("Sorry, this email is already in use."))
 
         return email
