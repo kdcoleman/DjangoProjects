@@ -26,3 +26,18 @@
  * JS/AJAX code to log the user out if user inactive for 5 mins
  * Integration tests for signup and login forms
  * Integration tests for signup, login, logout, and home views
+ 
+  ## Django All-Auth Login Authentication with Custom User Model
+
+ #### Project:
+ Login Authentication using Django All-Auth package with a custom User model
+
+ #### kaysworldAllAuth:
+ * Custom Django Auth User model
+ * Custom form validation errors
+ * Account confirmation email with token sent after signup
+ * JS code to detect user inactivity and alert user to extend session
+ * JS/AJAX code to log the user out if user inactive for 5 mins
+ * Integration tests for signup and login forms
+ * Integration tests for signup, login, logout, and home views
+ * Integration test for email confirmation
