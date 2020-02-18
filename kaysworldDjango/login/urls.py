@@ -9,6 +9,6 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
     path('signup/', views.signup, name='signup'),
-    path('confirm/<slug:uid64>/<slug:token>/', views.confirm, name='confirm'),
+    path('confirm/<slug:uidb64>/<slug:token>/', views.confirm, name='confirm'),
     path('<int:user_id>/home/', login_required(views.home), name='home'),
 ]
