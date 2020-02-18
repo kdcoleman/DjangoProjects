@@ -35,7 +35,7 @@
       let inactiveMsg = document.getElementById('inactiveMsg');
       let inactiveButton = document.getElementById('inactiveButton');
       let welcomeMsg = document.getElementById('welcomeMsg');
-      let returningUser = {{user.email_confirmed|lower}};
+      let returningUser = {{email.verified|lower}};
 
       // Show welcome message and start inactivity methods
       window.addEventListener('load', function(){
