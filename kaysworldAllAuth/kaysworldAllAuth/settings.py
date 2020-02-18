@@ -27,6 +27,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Configure email host
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'you@example.com'
+EMAIL_HOST_PASSWORD = 'your_password'
+EMAIL_PORT = 587
+
 # Custom User Model
 AUTH_USER_MODEL = 'users.User'
 
@@ -63,6 +70,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_USER_DISPLAY = lambda user: user.get_short_name()
 
 ACCOUNT_FORMS = {
     'login': 'kaysworldAllAuth.forms.UserLoginForm',
