@@ -1,0 +1,5 @@
+Hey {{ user.first_name }}!
+
+To confirm your email, go to http://{{ domain }}/accounts/confirm/{{ uid }}/{{ token }}/
+
+Thank you from {{ domain }}!
