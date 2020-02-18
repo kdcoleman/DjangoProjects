@@ -30,12 +30,15 @@ ALLOWED_HOSTS = []
 # Custom User Model for Login
 AUTH_USER_MODEL = 'login.User'
 
-# Configure email host
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'you@example.com'
-EMAIL_HOST_PASSWORD = 'your_password'
-EMAIL_PORT = 587
+# Configure email host for production
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = 'you@example.com'
+# EMAIL_HOST_PASSWORD = 'your_password'
+# EMAIL_PORT = 587
+
+# Configure email for development
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 # Application definition
 
