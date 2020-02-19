@@ -12,20 +12,18 @@ class LoginForm(forms.Form):
         password = cleaned_data.get('password')
 
         if email and password:
-            try:
-                User.objects.get(email=email, password=password)
-            except User.DoesNotExist:
-                self.add_error('password', forms.ValidationError("Incorrect password"))
+            user_exists = User.objects.filter(email=email, password=password).exists()
+            if not user_exists:
+                self.add_error('password', forms.ValidationError("Incorrect password."))
 
         return cleaned_data
 
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        try:
-            User.objects.get(email=email)
-        except User.DoesNotExist:
-            raise forms.ValidationError("Account not found")
+        user_exists = User.objects.filter(email=email).exists()
+        if not user_exists:
+            raise forms.ValidationError("Account not found. Verify the email is correct.")
 
         return email
 
@@ -44,16 +42,15 @@ class SignupForm(forms.Form):
 
         if password and confirm_password:
             if password != confirm_password:
-                self.add_error('confirm_password', forms.ValidationError("Password does not match"))
+                self.add_error('confirm_password', forms.ValidationError("The two password fields didn’t match."))
 
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        try:
-            User.objects.get(email=email)
-        except User.DoesNotExist:
+        user_exists = User.objects.filter(email=email).exists()
+        if not user_exists:
             return email
         else:
-            raise forms.ValidationError("Sorry, this email is already in use")
+            raise forms.ValidationError("Sorry, this email is already in use.")
 
         return email
