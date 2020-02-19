@@ -1,4 +1,4 @@
 {% load i18n %}
 {% autoescape off %}
-{% blocktrans %}Please Confirm Your Email{% endblocktrans %}
+{% blocktrans %}Confirm your Kay's World account{% endblocktrans %}
 {% endautoescape %}
