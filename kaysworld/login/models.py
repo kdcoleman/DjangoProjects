@@ -12,8 +12,15 @@ class User(models.Model):
     join_date = models.DateTimeField('date joined')
     email_confirmed = models.BooleanField(default=False)
 
+
     def joined_recently(self):
         return timezone.now() - datetime.timedelta(days=7) <= self.join_date <= timezone.now()
+
+
+    def get_short_name(self):
+        "Returns the short name for the user."
+        return self.first_name
+
 
     def __str__(self):
         first = self.first_name
