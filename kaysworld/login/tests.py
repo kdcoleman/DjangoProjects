@@ -90,7 +90,7 @@ class UserSignupFormTests(TestCase):
         is provided.
         """
         user = User(first_name='Jane', last_name='Doe', email='janedoe@example.com',
-                    password='Testing1!', join_date=timezone.now(), email_confirmed=False)
+                    password='Testing1!', join_date=timezone.now())
         user.save()
 
         data = {'first_name': 'First',
@@ -143,7 +143,7 @@ class UserLoginFormTests(TestCase):
         The login form is valid when valid credentials are provided.
         """
         user = User(first_name='Jane', last_name='Doe', email='janedoe@example.com',
-                    password='Testing1!', join_date=timezone.now(), email_confirmed=False)
+                    password='Testing1!', join_date=timezone.now())
         user.save()
 
         data = {'email': 'janedoe@example.com',
@@ -160,7 +160,7 @@ class UserLoginFormTests(TestCase):
         Form returns a email field error when the incorrect email is provided.
         """
         user = User(first_name='Jane', last_name='Doe', email='janedoe@example.com',
-                    password='Testing1!', join_date=timezone.now(), email_confirmed=False)
+                    password='Testing1!', join_date=timezone.now())
         user.save()
 
         data = {'email': 'janedoe2@example.com',
@@ -179,7 +179,7 @@ class UserLoginFormTests(TestCase):
         is provided.
         """
         user = User(first_name='Jane', last_name='Doe', email='janedoe@example.com',
-                    password='Testing1!', join_date=timezone.now(), email_confirmed=False)
+                    password='Testing1!', join_date=timezone.now())
         user.save()
 
         data = {'email': 'janedoe@example.com',
@@ -198,7 +198,7 @@ class UserHomeViewTests(TestCase):
         Authenticated user is directed to the home page.
         """
         user = User(first_name='Jane', last_name='Doe', email='janedoe@example.com',
-                    password='Testing1!', join_date=timezone.now(), email_confirmed=False)
+                    password='Testing1!', join_date=timezone.now())
         user.save()
 
         session = self.client.session
@@ -214,7 +214,7 @@ class UserHomeViewTests(TestCase):
         A user that is not authenticated is redirected to the login page.
         """
         new_user = User(first_name='Jane', last_name='Doe', email='janedoe@example.com',
-                    password='Testing1!', join_date=timezone.now(), email_confirmed=False)
+                    password='Testing1!', join_date=timezone.now())
         new_user.save()
 
         response = self.client.get(reverse('login:home', args=(new_user.id,)), follow=True)
@@ -231,7 +231,7 @@ class UserLoginViewTests(TestCase):
         Login view redirects to home view with valid credentials.
         """
         user = User(first_name='Jane', last_name='Doe', email='janedoe@example.com',
-                    password='Testing1!', join_date=timezone.now(), email_confirmed=False)
+                    password='Testing1!', join_date=timezone.now())
         user.save()
 
         data = {'email': 'janedoe@example.com',
@@ -250,7 +250,7 @@ class UserLoginViewTests(TestCase):
         again in the login view with the email field form error.
         """
         user = User(first_name='Jane', last_name='Doe', email='janedoe@example.com',
-                    password='Testing1!', join_date=timezone.now(), email_confirmed=False)
+                    password='Testing1!', join_date=timezone.now())
         user.save()
 
         data = {'email': 'janedoe2@example.com',
@@ -269,7 +269,7 @@ class UserLoginViewTests(TestCase):
         again in the login view with the password field form error.
         """
         user = User(first_name='Jane', last_name='Doe', email='janedoe@example.com',
-                    password='Testing1!', join_date=timezone.now(), email_confirmed=False)
+                    password='Testing1!', join_date=timezone.now())
         user.save()
 
         data = {'email': 'janedoe@example.com',
@@ -307,7 +307,7 @@ class UserSignupViewTests(TestCase):
         again in the signup view with the email field form error.
         """
         user = User(first_name='Jane', last_name='Doe', email='janedoe@example.com',
-                    password='Testing1!', join_date=timezone.now(), email_confirmed=False)
+                    password='Testing1!', join_date=timezone.now())
         user.save()
 
         data = {'first_name': 'First',
