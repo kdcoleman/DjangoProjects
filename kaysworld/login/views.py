@@ -36,15 +36,15 @@ def login(request):
         form = LoginForm(request.POST)
 
         if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
             user = User.objects.get(email=email)
 
             if user.password == password:
-                request.session['user_id'] = user.id
+                request.session.['user_id'] = user.id
                 request.session['last_activity'] = str(timezone.now())
                 request.session.set_expiry(300)
-                return HttpResponseRedirect(reverse('login:home', args=(request.session['user_id'],)))
+                return HttpResponseRedirect(reverse('login:home', args=(request.session.get('user_id'),)))
             else:
                 return render(request, 'login/login.html', {'form': form})
 
@@ -59,10 +59,10 @@ def signup(request):
         form = SignupForm(request.POST)
 
         if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
 
             user = User(first_name=first_name, last_name=last_name, email=email,
             password=password, join_date=timezone.now())
@@ -70,22 +70,20 @@ def signup(request):
 
             current_site = get_current_site(request)
             mail_subject = "Confirm your Kay's World account"
-            message = render_to_string('login/confirm.html', {
+            message = render_to_string('login/confirm.txt', {
                 'user': user,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': confirm_account_token.make_token(user),
             })
-            to_email = email
-            email_message = EmailMessage(mail_subject, message, to=[to_email])
-            email_message.content_subtype = "html"
+            email_message = EmailMessage(mail_subject, message, to=[email])
             email_message.send()
 
             request.session['user_id'] = user.id
             request.session['last_activity'] = str(timezone.now())
             request.session.set_expiry(300)
 
-            return HttpResponseRedirect(reverse('login:home', args=(request.session['user_id'],)))
+            return HttpResponseRedirect(reverse('login:home', args=(request.session.get('user_id'),)))
 
     else:
         form = SignupForm()
