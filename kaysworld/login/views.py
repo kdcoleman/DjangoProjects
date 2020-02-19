@@ -41,7 +41,7 @@ def login(request):
             user = User.objects.get(email=email)
 
             if user.password == password:
-                request.session.['user_id'] = user.id
+                request.session['user_id'] = user.id
                 request.session['last_activity'] = str(timezone.now())
                 request.session.set_expiry(300)
                 return HttpResponseRedirect(reverse('login:home', args=(request.session.get('user_id'),)))
