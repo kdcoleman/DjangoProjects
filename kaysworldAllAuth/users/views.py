@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
-from allauth.account.models import EmailAddress
+from allauth.account.signals import email_confirmed
+from django.dispatch import receiver
 from django.utils import timezone
 from django.urls import reverse
 
@@ -15,5 +16,11 @@ def index(request):
 def home(request, user_id):
     if request.user.is_authenticated:
         user = get_object_or_404(User, pk=user_id)
-        email = get_object_or_404(EmailAddress, user=request.user)
-        return render(request, 'users/home.html', {'user': user, 'email': email})
+        return render(request, 'users/home.html', {'user': user})
+
+
+@receiver(email_confirmed)
+def email_confirmed_(request, email_address, **kwargs):
+    user = User.objects.get(email=email_address.email)
+    user.email_confirmed = True
+    user.save()
