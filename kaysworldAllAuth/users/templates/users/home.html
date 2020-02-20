@@ -35,7 +35,7 @@
       let inactiveMsg = document.getElementById('inactiveMsg');
       let inactiveButton = document.getElementById('inactiveButton');
       let welcomeMsg = document.getElementById('welcomeMsg');
-      let returningUser = {{email.verified|lower}};
+      let returningUser = {{user.email_confirmed|lower}};
 
       // Show welcome message and start inactivity methods
       window.addEventListener('load', function(){
@@ -52,11 +52,11 @@
         if (!returningUser) {
           newUserMsg = "Welcome " + "{{user.first_name}}" +
           "! We're so glad you decided to explore the land of Kay. We sent a confirmation email to "
-          + "{{user.email}}" + ". <br><br> Please confirm your account."
+          + "{{user.email}}" + ". <br><br> Please confirm your account.";
           welcomeMsg.innerHTML = newUserMsg;
         } else {
           returningUserMsg = "Welcome back " + "{{user.first_name}}" +
-          "! Check out what's new since your last time here. Happy exploring!"
+          "! Check out what's new since your last time here. Happy exploring!";
           welcomeMsg.textContent = returningUserMsg;
         }
       }
