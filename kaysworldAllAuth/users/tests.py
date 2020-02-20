@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.conf import settings
+from django.core import mail
 from django.contrib.sites.models import Site
 from allauth.socialaccount.models import SocialApp
 from django.contrib.auth import get_user, get_user_model
@@ -416,3 +417,22 @@ class UserLogoutViewTests(TestCase):
 
         self.assertRedirects(response, reverse('users:index'), status_code=302, target_status_code=200)
         self.assertEqual(len(response.redirect_chain), 1)
+
+
+class UserConfirmViewTests(TestCase):
+    def test_confirm_email_sent(self):
+        """
+        Send confirmation email when user signs up. When user clicks on the link
+        user.email_confirmed is set to True.
+        """
+        data = {'first_name': 'First',
+                'last_name': 'Last',
+                'email': 'email@example.com',
+                'password1': 'Testing!',
+                'password2': 'Testing!'
+        }
+
+        response = self.client.post('/accounts/signup/', data)
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "[example.com] Confirm your Kay's World account")
